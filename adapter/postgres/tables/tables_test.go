@@ -8,14 +8,23 @@ import (
 	"os/exec"
 	"testing"
 
+	_ "embed"
+
 	"github.com/alextanhongpin/go-core-microservice/containers"
 )
 
 const postgresVersion = "15.1-alpine"
 
+//go:embed testdata/baseline.sql
+var baseline string
+
 func TestMain(m *testing.M) {
 	stop := containers.StartPostgres(postgresVersion, func(db *sql.DB) error {
 		// Issue, there is no easy way to run the migration.
+		_, err := db.Exec(baseline)
+		if err != nil {
+			return err
+		}
 
 		return nil
 	})

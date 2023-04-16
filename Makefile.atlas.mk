@@ -2,6 +2,8 @@ pg_conn := postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?ssl
 pg_conn_dev := postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/dev?sslmode=disable
 
 
+TESTDATA_PATH := $(PWD)/adapter/postgres/tables/testdata
+
 # The path that contains all the schema files.
 SCHEMA_PATH := $(PWD)/adapter/postgres/schemas
 
@@ -57,10 +59,10 @@ atlas-diff-apply-dry-run: atlas-hash
 
 
 # Check database schemas.
+# NOTE: It is hard to migrate during test, so we always generate the schema.
 atlas-inspect:
-	@$(ATLAS) schema inspect --url $(pg_conn) --schema public --format '{{ sql . }}'
-
-
+	@mkdir -p $(TESTDATA_PATH)
+	@$(ATLAS) schema inspect --url $(pg_conn) --schema public --format '{{ sql . }}' > $(TESTDATA_PATH)/baseline.sql
 
 atlas-new: atlas-hash
 ifndef name

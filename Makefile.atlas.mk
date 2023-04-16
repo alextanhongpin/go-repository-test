@@ -1,3 +1,6 @@
+# NOTE: This is not as good as compared to golang-migrate and/or dbmate
+# because it doesn't handle DLL such as extensions and triggers.
+
 pg_conn := postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 pg_conn_dev := postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/dev?sslmode=disable
 
@@ -20,11 +23,12 @@ atlas-install:
 
 
 atlas-help:
-	@$(ATLAS) help
+	@$(ATLAS) $(topic) help
 
 
 atlas-hash:
 	@$(ATLAS) migrate hash --dir=file://schemas
+	@$(ATLAS) migrate hash --dir=file://migrations
 
 
 # Computes the diff between the target db with the local schemas.
@@ -63,6 +67,7 @@ atlas-diff-apply-dry-run: atlas-hash
 atlas-inspect:
 	@mkdir -p $(TESTDATA_PATH)
 	@$(ATLAS) schema inspect --url $(pg_conn) --schema public --format '{{ sql . }}' > $(TESTDATA_PATH)/baseline.sql
+	@cat $(TESTDATA_PATH)/baseline.sql
 
 atlas-new: atlas-hash
 ifndef name
@@ -70,15 +75,19 @@ ifndef name
 else
 	@$(ATLAS) migrate new $(name)\
 		--dir file://migrations \
-		--dir-format atlas
+		--dir-format golang-migrate
 endif
 
 
-atlas-hash-migrate:
-	@$(ATLAS) migrate hash --dir=file://migrations
 
-
-atlas-migrate: atlas-hash-migrate
-	@$(ATLAS) migrate apply $(name)\
-		--dir file://migrations \
+atlas-migrate: atlas-hash
+	@$(ATLAS) migrate apply \
+		--dir "file://migrations" \
 		--url $(pg_conn) $(n)
+
+
+atlas-migrate-diff: atlas-hash
+	@$(ATLAS) migrate diff $(name)\
+		--dir "file://migrations" \
+		--to "file://schemas" \
+		--dev-url $(pg_conn_dev)

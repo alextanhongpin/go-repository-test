@@ -19,6 +19,7 @@
 
 ## Running migration
 
+With Atlas (note: this is not ideal, use dbmate instead):
 ```bash
 # Run versioned migrations (triggers, extensions, seeding data).
 $ make atlas-migrate
@@ -30,3 +31,20 @@ $ make atlas-diff-apply
 # One alternative is to put the basic table creation in the versioned migration too and adding the trigger there.
 $ make atlas-migrate
 ```
+
+With dbmate:
+
+```bash
+$ make sql name=create_table...
+$ make migrate
+$ make rollback
+$ make reset
+```
+
+
+## Other migration options
+
+declarative:
+- [migra](https://github.com/djrobstep/migra) for postgres, example [here](https://github.com/alextanhongpin/ask-and-answer) and [here](https://github.com/alextanhongpin/go-food)
+- [skeema](https://www.skeema.io/) for mysql
+- [dbmate](https://github.com/alextanhongpin/go-passport)

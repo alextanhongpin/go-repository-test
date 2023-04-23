@@ -6,9 +6,9 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/alextanhongpin/dbtx/buntx"
 	"github.com/alextanhongpin/go-core-microservice/containers"
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres/tables"
-	"github.com/alextanhongpin/uow/bun"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -18,8 +18,7 @@ func TestUser(t *testing.T) {
 	ctx := context.Background()
 
 	db := containers.PostgresBunDB(t)
-	uow := bun.New(db)
-	userTable := tables.NewUser(uow)
+	userTable := tables.NewUser(buntx.New(db))
 
 	// Create.
 	user, err := userTable.Create(ctx, "john appleseed")

@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	uow "github.com/alextanhongpin/uow/bun"
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
@@ -18,11 +17,15 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-type UserTable struct {
-	conn uow.UOW
+type atomic interface {
+	DB(ctx context.Context) bun.IDB
 }
 
-func NewUser(conn uow.UOW) *UserTable {
+type UserTable struct {
+	conn atomic
+}
+
+func NewUser(conn atomic) *UserTable {
 	return &UserTable{
 		conn: conn,
 	}

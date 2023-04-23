@@ -3,17 +3,24 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
-	"github.com/alextanhongpin/go-core-microservice/database/postgres"
+	"github.com/alextanhongpin/dbtx/buntx"
+	xpostgres "github.com/alextanhongpin/go-core-microservice/database/postgres"
+	"github.com/alextanhongpin/go-repository-test/adapter/postgres"
 	"github.com/alextanhongpin/go-repository-test/adapter/repository"
-	"github.com/alextanhongpin/uow/bun"
 )
 
 func main() {
-	db := postgres.NewBun()
-	uow := bun.New(db)
+	dsn := postgres.NewDSN()
+	if err := postgres.Migrate(dsn, "."); err != nil {
+		log.Fatalf("failed to migrate: %v", err)
+	}
 
-	authRepo := repository.NewAuth(uow)
+	db := xpostgres.NewBun()
+	btx := buntx.New(db)
+
+	authRepo := repository.NewAuth(btx)
 	ctx := context.Background()
 	user, err := authRepo.CreateUser(ctx, "john appleseed")
 	if err != nil {

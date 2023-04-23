@@ -6,19 +6,22 @@ import (
 
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres/tables"
 	"github.com/alextanhongpin/go-repository-test/domain"
-	uow "github.com/alextanhongpin/uow/bun"
 	"github.com/google/uuid"
+	"github.com/uptrace/bun"
 )
 
+type atomic interface {
+	DB(ctx context.Context) bun.IDB
+	RunInTx(ctx context.Context, fn func(context.Context) error) error
+}
+
 type AuthRepository struct {
-	conn      uow.UOW
 	userTable *tables.UserTable
 }
 
-func NewAuth(conn uow.UOW) *AuthRepository {
+func NewAuth(db atomic) *AuthRepository {
 	return &AuthRepository{
-		conn:      conn,
-		userTable: tables.NewUser(conn),
+		userTable: tables.NewUser(db),
 	}
 }
 

@@ -11,8 +11,8 @@ import (
 
 // Migrate executes the migration programmatically.
 // Actually, we can just run the migration in schemas/schema.sql
-func Migrate(ds string, path string) error {
-	u, err := url.Parse(ds)
+func Migrate(dsn string, path string) error {
+	u, err := url.Parse(dsn)
 	if err != nil {
 		return err
 	}

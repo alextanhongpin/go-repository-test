@@ -13,7 +13,7 @@ import (
 	"github.com/alextanhongpin/go-repository-test/domain"
 )
 
-func newUser(u *tables.User) *domain.User {
+func NewUser(u *tables.User) *domain.User {
 	return &domain.User{
 		ID:        u.ID,
 		Name:      u.Name,

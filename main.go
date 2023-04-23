@@ -20,7 +20,7 @@ func main() {
 	db := xpostgres.NewBun()
 	btx := buntx.New(db)
 
-	authRepo := repository.NewAuth(btx)
+	authRepo := repository.NewAuthRepository(btx)
 	ctx := context.Background()
 	user, err := authRepo.CreateUser(ctx, "john appleseed")
 	if err != nil {
@@ -30,7 +30,7 @@ func main() {
 
 	userID := user.ID
 	{
-		user, err := authRepo.FindUserByID(ctx, userID)
+		user, err := authRepo.FindUser(ctx, userID)
 		if err != nil {
 			panic(err)
 		}

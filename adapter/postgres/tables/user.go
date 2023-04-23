@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	bun.BaseModel `bun:"table:users,alias:u"`
+	bun.BaseModel `bun:"table:users,alias:t"`
 
 	ID        uuid.UUID `bun:",pk"`
 	Name      string
@@ -17,26 +17,22 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-type atomic interface {
-	DB(ctx context.Context) bun.IDB
-}
-
 type UserTable struct {
-	conn atomic
+	client
 }
 
-func NewUser(conn atomic) *UserTable {
+func NewUser(client client) *UserTable {
 	return &UserTable{
-		conn: conn,
+		client: client,
 	}
 }
 
-func (u *UserTable) Find(ctx context.Context, id uuid.UUID) (*User, error) {
+func (t *UserTable) Find(ctx context.Context, id uuid.UUID) (*User, error) {
 	user := &User{
 		ID: id,
 	}
 
-	if err := u.conn.DB(ctx).
+	if err := t.DB(ctx).
 		NewSelect().
 		Model(user).
 		WherePK().
@@ -47,12 +43,12 @@ func (u *UserTable) Find(ctx context.Context, id uuid.UUID) (*User, error) {
 	return user, nil
 }
 
-func (u *UserTable) Create(ctx context.Context, name string) (*User, error) {
+func (t *UserTable) Create(ctx context.Context, name string) (*User, error) {
 	user := &User{
 		Name: name,
 	}
 
-	if _, err := u.conn.DB(ctx).
+	if _, err := t.DB(ctx).
 		NewInsert().
 		Model(user).
 		Column("name").
@@ -64,12 +60,12 @@ func (u *UserTable) Create(ctx context.Context, name string) (*User, error) {
 	return user, nil
 }
 
-func (u *UserTable) Delete(ctx context.Context, id uuid.UUID) error {
+func (t *UserTable) Delete(ctx context.Context, id uuid.UUID) error {
 	user := &User{
 		ID: id,
 	}
 
-	_, err := u.conn.DB(ctx).
+	_, err := t.DB(ctx).
 		NewDelete().
 		Model(user).
 		WherePK().

@@ -1,4 +1,4 @@
-package tables_test
+package repository_test
 
 import (
 	"database/sql"
@@ -15,7 +15,7 @@ const postgresVersion = "15.1-alpine"
 
 func TestMain(m *testing.M) {
 	stop := containers.StartPostgres(postgresVersion, func(db *sql.DB) error {
-		b, err := os.ReadFile("../schemas/schema.sql")
+		b, err := os.ReadFile("../postgres/schemas/schema.sql")
 		if err != nil {
 			return err
 		}

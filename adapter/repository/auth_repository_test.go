@@ -6,6 +6,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/alextanhongpin/core/test/testutil"
 	"github.com/alextanhongpin/dbtx/buntx"
 	"github.com/alextanhongpin/go-core-microservice/containers"
 	"github.com/alextanhongpin/go-repository-test/adapter/repository"
@@ -32,6 +33,7 @@ func TestAuthRepository(t *testing.T) {
 	assert.Equal(name, user.Name)
 	assert.Equal(false, user.CreatedAt.IsZero())
 	assert.Equal(false, user.UpdatedAt.IsZero())
+	testutil.DumpJSON(t, user, testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"))
 
 	// Find the created user.
 	john, err := repo.FindUser(ctx, user.ID)

@@ -1,0 +1,16 @@
+{
+ "Product": {
+  "ID": 1,
+  "Name": "Socks",
+  "Description": "A plain socks",
+  "UserID": "00000000-0000-0000-0000-000000000000",
+  "CreatedAt": "2023-06-03T08:18:49.158969Z",
+  "UpdatedAt": "2023-06-03T08:18:49.158969Z"
+ },
+ "User": {
+  "ID": "35f53148-b4b8-497c-9d5e-f15846f71a9b",
+  "Name": "John Appleseed",
+  "CreatedAt": "2023-06-03T08:18:49.158969Z",
+  "UpdatedAt": "2023-06-03T08:18:49.158969Z"
+ }
+}

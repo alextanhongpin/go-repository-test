@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/alextanhongpin/core/test/testutil"
 	"github.com/alextanhongpin/dbtx/buntx"
 	"github.com/alextanhongpin/go-core-microservice/containers"
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres/tables"
@@ -31,6 +32,7 @@ func TestProductRepository(t *testing.T) {
 		assert.NotNil(p.User, "expect product to have user")
 		assert.Equal(repository.NewProduct(socks), p.Product)
 		assert.Equal(repository.NewUser(john), p.User)
+		testutil.DumpJSON(t, p, testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"))
 	})
 
 	t.Run("find product failed", func(t *testing.T) {
@@ -51,6 +53,13 @@ func TestProductRepository(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(1, len(p))
 		assert.Equal(repository.NewProduct(socks), p[0])
+		// We cannot unmarshal array into map[string]interface{}.
+		// So we assign it to a map[string]interface{}
+		m := map[string]any{
+			"data": p,
+		}
+
+		testutil.DumpJSON(t, m, testutil.IgnoreFields("CreatedAt", "UpdatedAt"))
 	})
 
 	t.Run("list product failed", func(t *testing.T) {
@@ -64,6 +73,8 @@ func TestProductRepository(t *testing.T) {
 }
 
 func testProductRepositorySeed(t *testing.T, client *buntx.Atomic) (*tables.User, *tables.Product) {
+	t.Helper()
+
 	assert := assert.New(t)
 	ctx := context.Background()
 

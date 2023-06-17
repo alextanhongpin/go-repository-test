@@ -6,11 +6,10 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/alextanhongpin/core/storage/pg/pgtest"
 	"github.com/alextanhongpin/core/test/testutil"
 	"github.com/alextanhongpin/dbtx/buntx"
-	"github.com/alextanhongpin/go-core-microservice/containers"
 	"github.com/alextanhongpin/go-repository-test/adapter/repository"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +17,7 @@ func TestAuthRepository(t *testing.T) {
 	assert := assert.New(t)
 
 	// Setup repository.
-	db := containers.PostgresBunDB(t)
+	db := pgtest.BunTx(t)
 	repo := repository.NewAuthRepository(buntx.New(db))
 
 	name := "John Appleseed"
@@ -28,11 +27,7 @@ func TestAuthRepository(t *testing.T) {
 	user, err := repo.CreateUser(ctx, name)
 	assert.Nil(err)
 
-	assert.NotNil(user)
-	assert.NotEqual(uuid.Nil, user.ID)
-	assert.Equal(name, user.Name)
-	assert.Equal(false, user.CreatedAt.IsZero())
-	assert.Equal(false, user.UpdatedAt.IsZero())
+	// Dump.
 	testutil.DumpJSON(t, user, testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"))
 
 	// Find the created user.

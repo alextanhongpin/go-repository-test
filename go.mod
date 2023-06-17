@@ -3,7 +3,7 @@ module github.com/alextanhongpin/go-repository-test
 go 1.20
 
 require (
-	github.com/alextanhongpin/core v0.0.0-20230611075134-7931f56f7ac2
+	github.com/alextanhongpin/core v0.0.0-20230617084544-372d4a9b5722
 	github.com/alextanhongpin/dbtx v0.0.0-20230614161658-b9ca821a1134
 	github.com/alextanhongpin/go-core-microservice v0.0.0-20230415071410-b2a7378ff01b
 	github.com/amacneil/dbmate/v2 v2.4.0

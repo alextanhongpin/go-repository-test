@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/alextanhongpin/core/storage/pg/pgtest"
 	"github.com/alextanhongpin/core/test/testutil"
 	"github.com/alextanhongpin/dbtx/buntx"
-	"github.com/alextanhongpin/go-core-microservice/containers"
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres/tables"
 	"github.com/alextanhongpin/go-repository-test/adapter/repository"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +18,7 @@ func TestProductRepository(t *testing.T) {
 	ctx := context.Background()
 
 	// Setup repository.
-	db := containers.PostgresBunDB(t)
+	db := pgtest.BunTx(t)
 	client := buntx.New(db)
 
 	john, socks := testProductRepositorySeed(t, client)
@@ -53,13 +53,7 @@ func TestProductRepository(t *testing.T) {
 		assert.Nil(err)
 		assert.Equal(1, len(p))
 		assert.Equal(repository.NewProduct(socks), p[0])
-		// We cannot unmarshal array into map[string]interface{}.
-		// So we assign it to a map[string]interface{}
-		m := map[string]any{
-			"data": p,
-		}
-
-		testutil.DumpJSON(t, m, testutil.IgnoreFields("CreatedAt", "UpdatedAt"))
+		testutil.DumpJSON(t, p, testutil.IgnoreFields("CreatedAt", "UpdatedAt"))
 	})
 
 	t.Run("list product failed", func(t *testing.T) {

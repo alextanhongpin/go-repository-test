@@ -9,11 +9,14 @@ import (
 	xpostgres "github.com/alextanhongpin/go-core-microservice/database/postgres"
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres"
 	"github.com/alextanhongpin/go-repository-test/adapter/repository"
+	"github.com/alextanhongpin/go-repository-test/internal"
 )
 
 func main() {
+	fmt.Println(internal.Root)
+
 	dsn := postgres.NewDSN()
-	if err := postgres.Migrate(dsn, "."); err != nil {
+	if err := postgres.Migrate(dsn); err != nil {
 		log.Fatalf("failed to migrate: %v", err)
 	}
 

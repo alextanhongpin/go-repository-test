@@ -3,11 +3,11 @@ package repository
 import (
 	"context"
 
-	"github.com/uptrace/bun"
+	"github.com/alextanhongpin/dbtx/buntx"
 )
 
 type atomic interface {
-	DB(ctx context.Context) bun.IDB
+	DBTx(ctx context.Context) buntx.DBTX
 	RunInTx(ctx context.Context, fn func(context.Context) error) error
 }
 

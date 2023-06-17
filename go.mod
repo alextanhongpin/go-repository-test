@@ -3,12 +3,12 @@ module github.com/alextanhongpin/go-repository-test
 go 1.20
 
 require (
-	github.com/alextanhongpin/core v0.0.0-20230602183029-5c7931c9f3ab
-	github.com/alextanhongpin/dbtx v0.0.0-20230423032709-aafe146ae534
+	github.com/alextanhongpin/core v0.0.0-20230611075134-7931f56f7ac2
+	github.com/alextanhongpin/dbtx v0.0.0-20230614161658-b9ca821a1134
 	github.com/alextanhongpin/go-core-microservice v0.0.0-20230415071410-b2a7378ff01b
-	github.com/amacneil/dbmate v1.16.2
+	github.com/amacneil/dbmate/v2 v2.4.0
 	github.com/google/uuid v1.3.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	github.com/uptrace/bun v1.1.14
 )
 
@@ -53,9 +53,9 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
-	golang.org/x/crypto v0.9.0 // indirect
+	golang.org/x/crypto v0.10.0 // indirect
 	golang.org/x/mod v0.10.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
+	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/tools v0.9.3 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

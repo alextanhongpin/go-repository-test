@@ -3,13 +3,14 @@ package tables
 import (
 	"context"
 
+	"github.com/alextanhongpin/dbtx/buntx"
 	"github.com/uptrace/bun"
 )
 
 // client represents either a db or tx
 // client.
 type client interface {
-	DB(ctx context.Context) bun.IDB
+	DBTx(ctx context.Context) buntx.DBTX
 }
 
 type OffsetPagination struct {

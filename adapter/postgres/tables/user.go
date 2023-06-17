@@ -32,7 +32,7 @@ func (t *UserTable) Find(ctx context.Context, id uuid.UUID) (*User, error) {
 		ID: id,
 	}
 
-	if err := t.DB(ctx).
+	if err := t.DBTx(ctx).
 		NewSelect().
 		Model(user).
 		WherePK().
@@ -48,7 +48,7 @@ func (t *UserTable) Create(ctx context.Context, name string) (*User, error) {
 		Name: name,
 	}
 
-	if _, err := t.DB(ctx).
+	if _, err := t.DBTx(ctx).
 		NewInsert().
 		Model(user).
 		Column("name").
@@ -65,7 +65,7 @@ func (t *UserTable) Delete(ctx context.Context, id uuid.UUID) error {
 		ID: id,
 	}
 
-	_, err := t.DB(ctx).
+	_, err := t.DBTx(ctx).
 		NewDelete().
 		Model(user).
 		WherePK().

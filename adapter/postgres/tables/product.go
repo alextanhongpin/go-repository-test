@@ -37,7 +37,7 @@ func (t *ProductTable) Find(ctx context.Context, id int64, relations ...Relation
 		ID: id,
 	}
 
-	q := t.DB(ctx).NewSelect().Model(p)
+	q := t.DBTx(ctx).NewSelect().Model(p)
 	for _, relation := range relations {
 		q = q.Relation(relation.Name, relation.Apply...)
 	}
@@ -52,7 +52,7 @@ func (t *ProductTable) Find(ctx context.Context, id int64, relations ...Relation
 func (t *ProductTable) List(ctx context.Context, pagination *OffsetPagination) ([]Product, error) {
 	var p []Product
 
-	q := t.DB(ctx).NewSelect().Model(&p)
+	q := t.DBTx(ctx).NewSelect().Model(&p)
 
 	if pagination != nil {
 		q = q.
@@ -78,7 +78,7 @@ func (t *ProductTable) Create(ctx context.Context, name, description string, use
 		UserID:      userID,
 	}
 
-	if _, err := t.DB(ctx).
+	if _, err := t.DBTx(ctx).
 		NewInsert().
 		Model(p).
 		Column(
@@ -99,7 +99,7 @@ func (t *ProductTable) Delete(ctx context.Context, id int64) error {
 		ID: id,
 	}
 
-	_, err := t.DB(ctx).
+	_, err := t.DBTx(ctx).
 		NewDelete().
 		Model(p).
 		WherePK().

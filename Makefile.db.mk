@@ -11,6 +11,9 @@ DATABASE_URL := postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME
 PGPASSWORD := $(DB_PASS)
 
 
+db:
+	@docker-compose exec db bash
+
 db-cli:
 	@docker-compose exec db psql -U $(DB_USER)
 

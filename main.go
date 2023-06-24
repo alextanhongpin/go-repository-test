@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/alextanhongpin/core/storage/pg"
 	"github.com/alextanhongpin/dbtx/buntx"
-	xpostgres "github.com/alextanhongpin/go-core-microservice/database/postgres"
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres"
 	"github.com/alextanhongpin/go-repository-test/adapter/repository"
 	"github.com/alextanhongpin/go-repository-test/internal"
@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("failed to migrate: %v", err)
 	}
 
-	db := xpostgres.NewBun()
+	db := pg.NewBun(dsn)
 	btx := buntx.New(db)
 
 	authRepo := repository.NewAuthRepository(btx)

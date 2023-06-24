@@ -29,7 +29,9 @@ func createUser(t *testing.T, db *bun.DB) *tables.User {
 func TestProduct(t *testing.T) {
 	assert := assert.New(t)
 
+	dump := &testutil.SQLDump{}
 	db := pgtest.BunTx(t)
+	db.AddQueryHook(&QueryHook{dump: dump})
 	user := createUser(t, db)
 
 	ctx := context.Background()
@@ -56,6 +58,8 @@ func TestProduct(t *testing.T) {
 	},
 		testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt", "UserID"),
 	)
+	dump.Rows = product
+	testutil.DumpSQL(t, dump, testutil.Parameterize(), testutil.IgnoreFields("$3", "ID", "CreatedAt", "UpdatedAt", "UserID"))
 
 	// Read.
 	socks, err := tbl.Find(ctx, product.ID)

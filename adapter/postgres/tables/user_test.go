@@ -18,7 +18,12 @@ func TestUser(t *testing.T) {
 	assert := assert.New(t)
 	ctx := context.Background()
 
+	// Create a new dump
+	dump := &testutil.SQLDump{}
 	db := pgtest.BunTx(t)
+
+	// Pass it to query hook.
+	db.AddQueryHook(&QueryHook{dump: dump})
 	tbl := tables.NewUser(buntx.New(db))
 
 	// Create.
@@ -36,10 +41,17 @@ func TestUser(t *testing.T) {
 		},
 		Rows: user,
 	},
-		testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt", "UserID"),
+		testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"),
 	)
 	assert.NotNil(user)
 	assert.True(user.ID != uuid.Nil)
+
+	dump.Rows = user
+	testutil.DumpSQL(t,
+		dump,
+		testutil.Parameterize(),
+		testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"),
+	)
 
 	// Read.
 	john, err := tbl.Find(ctx, user.ID)

@@ -26,8 +26,12 @@ github.com/alextanhongpin/core v0.0.0-20230623115155-66224995d396 h1:CUvG9l6OYei
 github.com/alextanhongpin/core v0.0.0-20230623115155-66224995d396/go.mod h1:7EID96PhrFuN6NEJoExAgYgV+z5tLULLNQlB8wYDgXs=
 github.com/alextanhongpin/core v0.0.0-20230624042028-aa35b3cd268b h1:IRPOLRE67Z/JtMfgHxRKTEYNXuetYWNlK+QJELYcTNA=
 github.com/alextanhongpin/core v0.0.0-20230624042028-aa35b3cd268b/go.mod h1:7EID96PhrFuN6NEJoExAgYgV+z5tLULLNQlB8wYDgXs=
+github.com/alextanhongpin/core v0.0.0-20230625023850-0453e9cb2852 h1:Pj7YqploZVQXC2UFHrPUidSfZrAdtc6OxahAO2sP97A=
+github.com/alextanhongpin/core v0.0.0-20230625023850-0453e9cb2852/go.mod h1:E1XZ1RcveJCsp12Nz/S4iYu93oWBJrw57NKXGJ9H7f4=
 github.com/alextanhongpin/dbtx v0.0.0-20230614161658-b9ca821a1134 h1:q9cQEwXFKCqixgZEJBIWDPfrmj+fJtiemwJ18O6nlaU=
 github.com/alextanhongpin/dbtx v0.0.0-20230614161658-b9ca821a1134/go.mod h1:B3sQ9uCIF/A92h7KtTHgpplRANGNH50vCAE45TzJro4=
+github.com/alextanhongpin/dbtx v0.0.0-20230625045014-40eaecea3ab0 h1:ZZM+w51gZ0GMX7nLq77xbsUnLDFCp6m6Xagr9q/xLbg=
+github.com/alextanhongpin/dbtx v0.0.0-20230625045014-40eaecea3ab0/go.mod h1:oB+Hc9rSEFL+t9YjaNDupFvQAFqABRzgLYD0wRWd8HE=
 github.com/alextanhongpin/errcodes v0.0.0-20230602163126-0444dce7a961 h1:jO84rdWPaiPMiGPymF6bLYREbbc6QmWp392N7hMXuew=
 github.com/alextanhongpin/errcodes v0.0.0-20230602163126-0444dce7a961/go.mod h1:tRzSFitRCjJC1XU/oTkxpb+hvajA96ofCYlLKlEVXLo=
 github.com/amacneil/dbmate/v2 v2.5.0 h1:cl9r5HUO2BFdG6fNR1XwH8UiNcml4ctoKodRzUOLVNk=

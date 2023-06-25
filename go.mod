@@ -3,8 +3,8 @@ module github.com/alextanhongpin/go-repository-test
 go 1.20
 
 require (
-	github.com/alextanhongpin/core v0.0.0-20230624042028-aa35b3cd268b
-	github.com/alextanhongpin/dbtx v0.0.0-20230614161658-b9ca821a1134
+	github.com/alextanhongpin/core v0.0.0-20230625023850-0453e9cb2852
+	github.com/alextanhongpin/dbtx v0.0.0-20230625045014-40eaecea3ab0
 	github.com/amacneil/dbmate/v2 v2.5.0
 	github.com/google/uuid v1.3.0
 	github.com/uptrace/bun v1.1.14

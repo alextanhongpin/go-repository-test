@@ -46,11 +46,9 @@ func TestUser(t *testing.T) {
 	assert.NotNil(user)
 	assert.True(user.ID != uuid.Nil)
 
-	dump.Rows = user
 	testutil.DumpPostgres(t,
-		dump,
-		testutil.Normalize(),
-		testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"),
+		dump.WithResult(user),
+		testutil.IgnoreRows("ID", "CreatedAt", "UpdatedAt"),
 	)
 
 	// Read.

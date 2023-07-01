@@ -60,10 +60,10 @@ func TestProduct(t *testing.T) {
 	)
 
 	testutil.DumpPostgres(t,
-		dump.WithRows(product),
-		testutil.Normalize(),
+		dump.WithResult(product),
 		testutil.FileName("create_product"),
-		testutil.IgnoreFields("$3", "ID", "CreatedAt", "UpdatedAt", "UserID"))
+		testutil.IgnoreArgs("$3"),
+		testutil.IgnoreRows("ID", "CreatedAt", "UpdatedAt", "UserID"))
 
 	// Read.
 	socks, err := tbl.Find(ctx, product.ID)
@@ -71,10 +71,10 @@ func TestProduct(t *testing.T) {
 	assert.Equal(socks, product)
 
 	testutil.DumpPostgres(t,
-		dump.WithRows(socks),
-		testutil.Normalize(),
+		dump.WithResult(socks),
 		testutil.FileName("find_products"),
-		testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt", "UserID"))
+		testutil.IgnoreArgs("$3"),
+		testutil.IgnoreRows("ID", "CreatedAt", "UpdatedAt", "UserID"))
 
 	// Delete.
 	err = tbl.Delete(ctx, product.ID)

@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: $DB_USER
       POSTGRES_PASSWORD: $DB_PASS
       POSTGRES_MULTIPLE_DATABASES: $DB_NAME,dev
-    command: postgres -c logging_collector=on -c log_directory=/var/lib/postgresql/data -c log_filename=postgresql -c log_statement=all -c log_destination=jsonlog
+    command: postgres -c logging_collector=on -c log_directory=/var/lib/postgresql/data -c log_filename=postgresql -c log_statement=all -c log_destination=jsonlog -c fsync=off -c synchronous_commit=off -c full_page_writes=off
     ports:
       - $DB_HOST:$DB_PORT:5432
     volumes:

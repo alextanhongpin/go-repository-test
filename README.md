@@ -48,3 +48,19 @@ declarative:
 - [migra](https://github.com/djrobstep/migra) for postgres, example [here](https://github.com/alextanhongpin/ask-and-answer) and [here](https://github.com/alextanhongpin/go-food)
 - [skeema](https://www.skeema.io/) for mysql
 - [dbmate](https://github.com/alextanhongpin/go-passport)
+
+## Postgres conf
+
+Configuring non-durable settings. This is useful for speeding up tests.
+
+https://www.postgresql.org/docs/current/non-durability.html
+
+```yaml
+    command: postgres -c fsync=off -c synchronous_commit=off -c full_page_writes=off
+```
+
+```psql
+show fsync;
+show synchronous_commit;
+show full_page_writes;
+```

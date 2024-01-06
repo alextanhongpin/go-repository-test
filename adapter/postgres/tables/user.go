@@ -17,9 +17,17 @@ type User struct {
 	UpdatedAt time.Time
 }
 
+type UserTableMapper interface {
+	Find(ctx context.Context, id uuid.UUID) (*User, error)
+	Create(ctx context.Context, name string) (*User, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+}
+
 type UserTable struct {
 	client
 }
+
+var _ UserTableMapper = (*UserTable)(nil)
 
 func NewUser(client client) *UserTable {
 	return &UserTable{

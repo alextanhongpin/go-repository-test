@@ -22,6 +22,16 @@ type Product struct {
 	User *User `bun:"rel:belongs-to,join:user_id=id"`
 }
 
+// Define the ProductTableMapper interface.
+type ProductTableMapper interface {
+	Find(ctx context.Context, id int64, relations ...Relation) (*Product, error)
+	List(ctx context.Context, pagination *OffsetPagination) ([]Product, error)
+	Create(ctx context.Context, name, description string, userID uuid.UUID) (*Product, error)
+	Delete(ctx context.Context, id int64) error
+}
+
+var _ ProductTableMapper = (*ProductTable)(nil)
+
 type ProductTable struct {
 	client
 }

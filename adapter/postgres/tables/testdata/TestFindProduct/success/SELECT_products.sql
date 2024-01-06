@@ -6,7 +6,7 @@ SELECT p.id,
        p.created_at,
        p.updated_at
   FROM products p
-  WHERE p.id = 1
+  WHERE p.id = 2
 
 
 -- Query Normalized
@@ -21,15 +21,9 @@ SELECT p.id,
 
 
 -- Args
-$1: 1
+$1: 2
 
 
 
 -- Result
-ID: 1
-Name: Rainbow Socks
-Description: A rainbow colored socks
-UserID: 27069b9d-dafb-45ce-9c48-5800b3b5823d
-CreatedAt: "2023-07-01T13:13:59.223377Z"
-UpdatedAt: "2023-07-01T13:13:59.223377Z"
-User: null
+false

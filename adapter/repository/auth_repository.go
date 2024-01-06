@@ -10,7 +10,7 @@ import (
 )
 
 type AuthRepository struct {
-	users *tables.UserTable
+	users tables.UserTableMapper
 }
 
 func NewAuthRepository(db atomic) *AuthRepository {

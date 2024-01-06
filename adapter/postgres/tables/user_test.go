@@ -3,7 +3,6 @@ package tables_test
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"testing"
 
 	"github.com/alextanhongpin/core/storage/pg/pgtest"
@@ -12,56 +11,71 @@ import (
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres/tables"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/uptrace/bun"
 )
 
-func TestUser(t *testing.T) {
-	assert := assert.New(t)
-	ctx := context.Background()
-
-	// Create a new dump
-	dump := &testutil.SQLDump{}
+func TestCreateUser(t *testing.T) {
 	db := pgtest.BunTx(t)
+	tbl := newUserTable(t, db)
+	u, err := tbl.Create(ctx, "John Appleseed")
+	assert.Nil(t, err)
+	testutil.DumpJSON(t, u, testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"))
+}
 
-	// Pass it to query hook.
-	db.AddQueryHook(&QueryHook{dump: dump})
+func TestFindUser(t *testing.T) {
+	db := pgtest.BunTx(t)
+	user := createUser(t, db)
+
+	t.Run("success", func(t *testing.T) {
+		tbl := newUserTable(t, db)
+		john, err := tbl.Find(ctx, user.ID)
+		assert.Nil(t, err)
+		testutil.DumpJSON(t, john, testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"))
+	})
+
+	t.Run("not found", func(t *testing.T) {
+		tbl := newUserTable(t, db)
+		_, err := tbl.Find(ctx, uuid.New())
+		assert.ErrorIs(t, err, sql.ErrNoRows)
+	})
+}
+
+func TestDeleteUser(t *testing.T) {
+	db := pgtest.BunTx(t)
+	user := createUser(t, db)
+
+	t.Run("success", func(t *testing.T) {
+		tbl := newUserTable(t, db)
+		err := tbl.Delete(ctx, user.ID)
+		assert.Nil(t, err)
+	})
+
+	t.Run("not found", func(t *testing.T) {
+		tbl := newUserTable(t, db)
+		err := tbl.Delete(ctx, uuid.New())
+		assert.Nil(t, err)
+	})
+}
+
+func createUser(t *testing.T, db *bun.DB) *tables.User {
+	t.Helper()
+
+	ctx := context.Background()
 	tbl := tables.NewUser(buntx.New(db))
+	u, err := tbl.Create(ctx, "John Appleseed")
+	assert.Nil(t, err)
+	assert.NotNil(t, u)
+	store(t.Name(), "users", u.ID, u)
 
-	// Create.
-	name := "john appleseed"
-	user, err := tbl.Create(ctx, name)
-	assert.Nil(err)
-	type createUser struct {
-		Args map[string]any
-		Rows *tables.User
-	}
+	return u
+}
 
-	testutil.DumpJSON(t, createUser{
-		Args: map[string]any{
-			"Name": name,
-		},
-		Rows: user,
-	},
-		testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt"),
-	)
-	assert.NotNil(user)
-	assert.True(user.ID != uuid.Nil)
+func newUserTable(t *testing.T, db *bun.DB) *tables.UserTable {
+	t.Helper()
+	db.AddQueryHook(&QueryHook{
+		t:    t,
+		opts: []testutil.SQLOption{testutil.IgnoreArgs("$1")},
+	})
 
-	testutil.DumpPostgres(t,
-		dump.WithResult(user),
-		testutil.IgnoreRows("ID", "CreatedAt", "UpdatedAt"),
-	)
-
-	// Read.
-	john, err := tbl.Find(ctx, user.ID)
-	assert.Nil(err)
-	assert.Equal(john, user)
-
-	// Delete.
-	err = tbl.Delete(ctx, user.ID)
-	assert.Nil(err)
-
-	// Check deleted.
-	_, err = tbl.Find(ctx, user.ID)
-	assert.NotNil(err)
-	assert.True(errors.Is(err, sql.ErrNoRows))
+	return tables.NewUser(buntx.New(db))
 }

@@ -3,7 +3,9 @@ package tables_test
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/alextanhongpin/core/storage/pg/pgtest"
@@ -11,6 +13,9 @@ import (
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres"
 	"github.com/uptrace/bun"
 )
+
+// Global context.
+var ctx = context.Background()
 
 const postgresVersion = "15.1-alpine"
 
@@ -24,8 +29,10 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+// QueryHook logs the sql statement into testdata/
 type QueryHook struct {
-	dump *testutil.SQLDump
+	t    *testing.T
+	opts []testutil.SQLOption
 }
 
 func (h *QueryHook) BeforeQuery(ctx context.Context, event *bun.QueryEvent) context.Context {
@@ -33,6 +40,40 @@ func (h *QueryHook) BeforeQuery(ctx context.Context, event *bun.QueryEvent) cont
 }
 
 func (h *QueryHook) AfterQuery(ctx context.Context, event *bun.QueryEvent) {
-	h.dump.Stmt = event.Query
-	h.dump.Args = event.QueryArgs
+	dump := &testutil.SQLDump{
+		Stmt: event.Query,
+		Args: event.QueryArgs,
+	}
+	event.Operation()
+	h.t.Cleanup(func() {
+		opts := append(h.opts, testutil.FileName(fmt.Sprintf("%s_%s", event.Operation(), event.IQuery.GetTableName())))
+		testutil.DumpPostgres(h.t, dump.WithResult(false), opts...)
+	})
+}
+
+// mappings store all the nested entities, namespacec by
+// the test name.
+// This allows access of constructed nested relations .
+var mappings sync.Map
+
+// store stores the entity into the namespaced mapping,
+// e.g. store(t.Name(), "users", "1", user)
+func store(name string, prefix string, key any, val any) {
+	m, _ := mappings.LoadOrStore(name, &sync.Map{})
+	m.(*sync.Map).Store(fmt.Sprintf("%s:%v", prefix, key), val)
+}
+
+// load allows loading the entity from a namespaced mapping
+// e.g. load[*tables.User](t.Name(), "users", "1")
+func load[T any](name string, prefix string, key any) T {
+	var t T
+	m, ok := mappings.Load(name)
+	if !ok {
+		return t
+	}
+	v, ok := m.(*sync.Map).Load(fmt.Sprintf("%s:%v", prefix, key))
+	if !ok {
+		return t
+	}
+	return v.(T)
 }

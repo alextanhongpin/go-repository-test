@@ -9,7 +9,7 @@ import (
 )
 
 type ProductRepository struct {
-	products *tables.ProductTable
+	products tables.ProductTableMapper
 }
 
 func NewProductRepository(db atomic) *ProductRepository {

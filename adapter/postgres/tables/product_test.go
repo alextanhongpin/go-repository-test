@@ -8,26 +8,28 @@ import (
 	"time"
 
 	"github.com/alextanhongpin/core/storage/pg/pgtest"
-	"github.com/alextanhongpin/core/test/testutil"
 	"github.com/alextanhongpin/dbtx/buntx"
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres/tables"
+	"github.com/alextanhongpin/testdump/jsondump"
+	"github.com/alextanhongpin/testdump/pgdump"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/uptrace/bun"
 )
 
+func init() {
+	jsondump.Register(new(tables.Product), jsondump.IgnoreFields("ID", "CreatedAt", "UpdatedAt", "UserID"))
+}
+
 func TestCreateProduct(t *testing.T) {
 	db := pgtest.BunTx(t)
 	db.AddQueryHook(&QueryHook{
-		t: t,
-		opts: []testutil.SQLOption{
-			testutil.IgnoreArgs("$3"),
-		},
+		Recorder: pgdump.NewRecorder(t, pgdump.IgnoreArgs("$3")),
 	})
 
 	t.Run("success", func(t *testing.T) {
 		p := createProduct(t, db)
-		testutil.DumpJSON(t, p, testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt", "UserID"))
+		jsondump.Dump(t, p)
 	})
 }
 
@@ -39,7 +41,7 @@ func TestFindProduct(t *testing.T) {
 		tbl := newProductTable(t, db)
 		res, err := tbl.Find(ctx, p.ID)
 		assert.Nil(t, err)
-		testutil.DumpJSON(t, res, testutil.IgnoreFields("ID", "CreatedAt", "UpdatedAt", "UserID"))
+		jsondump.Dump(t, res)
 	})
 
 	t.Run("not found", func(t *testing.T) {
@@ -107,16 +109,14 @@ func newProduct(options ...string) *tables.Product {
 			log.Fatalf("unknown product option: %s", o)
 		}
 	}
+
 	return p
 }
 
 func newProductTable(t *testing.T, db *bun.DB) *tables.ProductTable {
 	t.Helper()
 	db.AddQueryHook(&QueryHook{
-		t: t,
-		opts: []testutil.SQLOption{
-			testutil.IgnoreArgs("$3"),
-		},
+		Recorder: pgdump.NewRecorder(t, pgdump.IgnoreArgs("$3")),
 	})
 
 	return tables.NewProduct(buntx.New(db))

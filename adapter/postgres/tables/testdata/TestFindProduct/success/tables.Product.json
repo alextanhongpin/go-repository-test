@@ -1,9 +1,9 @@
 {
- "ID": 2,
- "Name": "table",
- "Description": "a wooden table",
- "UserID": "726767c5-c102-4cd5-ac18-337c0fdfaafd",
- "CreatedAt": "2024-01-06T15:37:57.401804Z",
- "UpdatedAt": "2024-01-06T15:37:57.401804Z",
- "User": null
+  "ID": 2,
+  "Name": "table",
+  "Description": "a wooden table",
+  "UserID": "cdbde2b6-0cd2-4aae-93af-2b2538ee4c51",
+  "CreatedAt": "2024-08-20T12:58:17.199741Z",
+  "UpdatedAt": "2024-08-20T12:58:17.199741Z",
+  "User": null
 }

@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/alextanhongpin/core/storage/pg/pgtest"
-	"github.com/alextanhongpin/core/test/testutil"
 	"github.com/alextanhongpin/go-repository-test/adapter/postgres"
+	"github.com/alextanhongpin/testdump/pgdump"
 	"github.com/uptrace/bun"
 )
 
@@ -31,8 +31,7 @@ func TestMain(m *testing.M) {
 
 // QueryHook logs the sql statement into testdata/
 type QueryHook struct {
-	t    *testing.T
-	opts []testutil.SQLOption
+	Recorder *pgdump.Recorder
 }
 
 func (h *QueryHook) BeforeQuery(ctx context.Context, event *bun.QueryEvent) context.Context {
@@ -40,15 +39,8 @@ func (h *QueryHook) BeforeQuery(ctx context.Context, event *bun.QueryEvent) cont
 }
 
 func (h *QueryHook) AfterQuery(ctx context.Context, event *bun.QueryEvent) {
-	dump := &testutil.SQLDump{
-		Stmt: event.Query,
-		Args: event.QueryArgs,
-	}
-	event.Operation()
-	h.t.Cleanup(func() {
-		opts := append(h.opts, testutil.FileName(fmt.Sprintf("%s_%s", event.Operation(), event.IQuery.GetTableName())))
-		testutil.DumpPostgres(h.t, dump.WithResult(false), opts...)
-	})
+	method := fmt.Sprintf("%s_%s", event.Operation(), event.IQuery.GetTableName())
+	h.Recorder.Record(method, event.Query, event.QueryArgs...)
 }
 
 // mappings store all the nested entities, namespacec by
